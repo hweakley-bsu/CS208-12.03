@@ -19,6 +19,11 @@ router.get('/', function(req, res, next){
 
 router.post('/create', function (req, res, next) {
     const { task } = req.body;
+
+    if (! task || task.trim() === '') {
+      return res.redirect('/');
+    }
+
     try {
       req.db.query('INSERT INTO todos (task) VALUES (?);', [task], (err, results) => {
         if (err) {
@@ -52,5 +57,32 @@ router.post('/delete', function (req, res, next) {
         res.status(500).send('Error deleting todo:');
     }
 });
+
+router.post('/edit', function (req, res, next) {
+  const { id, task, completed } = req.body;
+  const completedValue = completed ? 1: 0;
+
+  if(!task || task.trim() === '') {
+    return res.redirect('/');
+  }
+
+  try {
+    req.db.query(
+      'UPDATE todos SET task = ?, completed = ? WHERE id = ?;',
+      [task.trim(), completedValue, id], 
+      (err, results) => {
+        if (err) {
+          console.error('Error editing todo: ', err);
+          return res.status(500).send('Error editing todo');
+        }
+        console.log('Todo edited successfully: ', results);
+        res.redirect('/');
+      }
+    )
+  } catch (error) {
+    console.error('Error editing todo:', error);
+    res.status(500).send('Error editing todo');
+  }
+})
 
 module.exports = router;
