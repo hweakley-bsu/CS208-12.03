@@ -51,14 +51,31 @@ The application stores tasks in a MySQL database table named `todos`.
 | completed | Completion status (0 = Not Completed, 1 = Completed) |
 
 ## How to Run
+1. Install the Database
 
-1. Install project dependencies:
+To set up the database, run the `install_db.sh` script in the setup_scripts
+directory. This script will install MariaDB and start the server running. You
+only need to run this script once per Codespace.
+
+```bash
+./setup_scripts/install_db.sh
+```
+
+2. Create the Database Tables
+
+Create the initial tables by running the following command:
+
+```bash
+sudo mysql -u root -p < ./setup_scripts/create_demo_table.sql
+```
+
+3. Install project dependencies:
 
 ```bash
 npm install
 ```
 
-2. Start the application:
+4. Start the application:
 
 ```bash
 npm start
